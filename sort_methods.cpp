@@ -11,7 +11,7 @@ void swap(int *val1, int *val2)
     *val2 = aux;
 }
 
-void quickSort(int array[], int init, int end)
+void quickSort(vector<int> &array, int init, int end)
 {
     int pivo;
     int i, j;
@@ -34,18 +34,17 @@ void quickSort(int array[], int init, int end)
             j -= 1;
         }
         if (j > init)
-            quickSort(array, init, j+1);
+            quickSort(array, init, j);
         if (i < end)
             quickSort(array, i, end);
     }
 }
 
+
 int main()
 {
-    // vector<int> vetor{1, 2, 3, 5, 4, 990, 1, 987, 100, 55, 66};
-    int vetor[11] = {1, 2, 3, 5, 4, 990, 1, 987, 100, 55, 66};
-    // cout<<vetor.size()<<endl;
-    quickSort(vetor, 0, 11 - 1);
+    vector<int> vetor = {1, 2, 3, 5, 4, 990, 1, 987, 100, 55, 66};
+    quickSort(vetor, 0, vetor.size() - 1);
 
     for (int i = 0; i < 11; i++)
     {
