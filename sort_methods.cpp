@@ -43,4 +43,48 @@ void quickSort(vector<int> &array, int init, int end)
     }
 }
 
+void merge(vector<int> &array, int begin, int middle, int end)
+{
+    int begin1 = begin, begin2 = middle + 1;
+    int size = end - begin + 1;
+    vector<int> array_aux;
+    array_aux.reserve(size);
+    while (begin1 <= middle && begin2 <= end)
+    {
+        if (array[begin1] < array[begin2])
+        {
+            array_aux.push_back(array[begin1]);
+            begin1++;
+        }
+        else
+        {
+            array_aux.push_back(array[begin2]);
+            begin2++;
+        }
+    }
+    while (begin1 <= middle)
+    {
+        array_aux.push_back(array[begin1]);
+        begin1++;
+    }
+    while (begin2 <= end)
+    {
+        array_aux.push_back(array[begin2]);
+        begin2++;
+    }
+    for (int i = 0; i < array_aux.size(); i++)
+    {
+        array[begin + i] = array_aux[i];
+    }
+}
 
+void mergeSort(vector<int> &array, int begin, int end)
+{
+    if (begin < end)
+    {
+        int middle = (begin + end)/2;
+        mergeSort(array, begin, middle);
+        mergeSort(array, middle+1, end);
+        merge(array, begin, middle, end);
+    }
+}
