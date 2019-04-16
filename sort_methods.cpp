@@ -29,9 +29,6 @@ void quickSort(vector<int> &array, int init, int end)
             j -= 1;
         if (i <= j)
         {
-            // aux = array[i];
-            // array[i] = array[j];
-            // array[j] = aux;
             swap(array[i], array[j]);
             i += 1;
             j -= 1;
@@ -89,7 +86,7 @@ void mergeSort(vector<int> &array, int begin, int end)
     }
 }
 
-void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min)
+void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int type_sort = 0)
 {
     // faixas de valores dado o range do vetor
     int bucket_step = (num_max - num_min) / bucket_qtt;
@@ -97,6 +94,7 @@ void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min)
     vector<vector<int>> bucket_array;
     bucket_array.reserve(bucket_qtt);
 
+    // cria os buckets
     for (int i = 0; i < array.size(); i++)
     {
         for (int j = 1; (bucket_step * j) <= num_max; j++)
@@ -108,6 +106,26 @@ void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min)
         }
     }
 
-    // buckets gerados
-    quickSort(bucket_array[0], 0, bucket_array[0].size() - 1);
+    auto sort = quickSort; // default
+    //escolher qual metodo sera usado
+    if (type_sort == 0)
+    {
+        sort = quickSort;
+    }
+    else if (type_sort == 1)
+    {
+        sort = mergeSort;
+    }
+
+    // usa os buckets gerados para utilizar um metodo de busca
+    for (int i = 0; i < bucket_qtt; i++)
+    {
+        if (!bucket_array[i].empty())
+        {
+            sort(bucket_array[i], 0, bucket_array[i].size() - 1);
+            for (int j = 0; j < bucket_array[i].size(); j++)
+                cout << bucket_array[i][j] << " ";
+            cout << endl;
+        }
+    }
 }
