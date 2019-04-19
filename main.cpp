@@ -18,12 +18,16 @@ int main()
     // for (int i = 0; i < size; i++)
     //     array[i] = (rand() % (max_value - min_value + 1) + min_value);
     generateNumbers(array, size, max_value, min_value);
-    // quickSort(array, 0, array.size() - 1);
-    mergeSort(array, 0, array.size() - 1);
+    quickSort(array, 0, array.size() - 1);
+    for (int i = 0; i < size; i++){
+        cout<<array[i]<<" ";
+    }
+    cout<<endl;
+    // mergeSort(array, 0, array.size() - 1);
+    int bucket_qtt = 4;
+    // bucketSort(array, bucket_qtt, max_value, min_value, 1);
     view_lock();
 
-    int bucket_qtt = 4;
-    // bucketSort(array, bucket_qtt, max_value, min_value, 0);
     
     return 0;
 }

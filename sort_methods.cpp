@@ -14,43 +14,35 @@ void swap(int *val1, int *val2)
     *val2 = aux;
 }
 
+int partition(vector<int> &array, int init , int end)
+{
+    int pivot = array[end];
+    int i = init - 1;
+    for (int j = init; j < end; j++)
+    {
+        if (array[j] < pivot)
+        {
+            i = i + 1;
+            swap(array[i], array[j]);
+        }
+        sortview.show(array, {i, j, pivot}, "rby");
+    }
+    if (array[end] < array[i+1])
+        swap(array[i+1], array[end]);
+    return i+1;
+}
+
 void quickSort(vector<int> &array, int init, int end)
 {
-    /*
-        Cores:
-        i = red, j = blue, pivo = yellow
-    */
-    int pivo;
-    int i, j;
-    int aux;
-    i = init;
-    j = end;
-    pivo = array[(init + end) / 2];
-    while (i <= j)
+    if (init < end)
     {
-        while (array[i] < pivo && i < end)
-        {
-            i += 1;
-            sortview.show(array, {i, j, pivo}, "rby");
-        }
-        while (array[j] > pivo && j > init){
-            j -= 1;
-            sortview.show(array, {i, j, pivo}, "rby");
-        }
-        if (i <= j)
-        {
-            swap(array[i], array[j]);
-            sortview.show(array, {i, j, pivo}, "rby");
-            i += 1;
-            j -= 1;
-            sortview.show(array, {i, j, pivo}, "rby");
-        }
-        if (j > init)
-            quickSort(array, init, j);
-        if (i < end)
-            quickSort(array, i, end);
+        int p = partition(array, init, end);
+        sortview.show(array, {init, end, p}, "rby");
+        quickSort(array, init, p - 1);
+        quickSort(array, p + 1, end);
     }
 }
+
 
 void merge(vector<int> &array, int begin, int middle, int end)
 {
