@@ -14,7 +14,7 @@ void swap(int *val1, int *val2)
     *val2 = aux;
 }
 
-int partition(vector<int> &array, int init , int end, int &count_swap)
+int partition(SortView *sortview, vector<int> &array, int init, int end, int &count_swap)
 {
     int pivot = array[end];
     int i = init - 1;
@@ -26,32 +26,32 @@ int partition(vector<int> &array, int init , int end, int &count_swap)
             swap(array[i], array[j]);
             count_swap++;
         }
-        sortview.show(array, {i, j, pivot}, "rby", count_swap, (char*)"QuickSort");
+        sortview->show(array, {i, j, pivot}, "rby", count_swap, (char *)"QuickSort");
     }
-    if (array[end] < array[i+1]){
-        swap(array[i+1], array[end]);
-        sortview.show(array, {i, pivot}, "ry", count_swap, (char*)"QuickSort");
+    if (array[end] < array[i + 1])
+    {
+        swap(array[i + 1], array[end]);
+        sortview->show(array, {i, pivot}, "ry", count_swap, (char *)"QuickSort");
         count_swap++;
     }
-    return i+1;
+    return i + 1;
 }
 
-int quickSort(vector<int> &array, int init, int end, int count_swap = 0)
+int quickSort(SortView *sortview, vector<int> &array, int init, int end, int count_swap = 0)
 {
     if (init < end)
     {
-        int p = partition(array, init, end, count_swap);
-        sortview.show(array, {init, end, p}, "rby", count_swap, (char*)"QuickSort");
-        count_swap = quickSort(array, init, p - 1, count_swap);
-        sortview.show(array, {init, end, p}, "rby", count_swap, (char*)"QuickSort");
-        count_swap = quickSort(array, p + 1, end, count_swap);
-        sortview.show(array, {init, end, p}, "rby", count_swap, (char*)"QuickSort");
+        int p = partition(sortview, array, init, end, count_swap);
+        sortview->show(array, {init, end, p}, "rby", count_swap, (char *)"QuickSort");
+        count_swap = quickSort(sortview, array, init, p - 1, count_swap);
+        sortview->show(array, {init, end, p}, "rby", count_swap, (char *)"QuickSort");
+        count_swap = quickSort(sortview, array, p + 1, end, count_swap);
+        sortview->show(array, {init, end, p}, "rby", count_swap, (char *)"QuickSort");
     }
     return count_swap;
 }
 
-
-int merge(vector<int> &array, int begin, int middle, int end, int count_swap = 0)
+int merge(SortView *sortview, vector<int> &array, int begin, int middle, int end, int count_swap = 0)
 {
     /*
         Cores:
@@ -73,42 +73,42 @@ int merge(vector<int> &array, int begin, int middle, int end, int count_swap = 0
             array_aux.push_back(array[begin2]);
             begin2++;
         }
-        sortview.show(array, {begin1, begin2, middle}, "rby", count_swap, (char*)"MergeSort");
+        sortview->show(array, {begin1, begin2, middle}, "rby", count_swap, (char *)"MergeSort");
     }
     while (begin1 <= middle)
     {
         array_aux.push_back(array[begin1]);
         begin1++;
-        sortview.show(array, {begin1, begin2, middle}, "rby", count_swap, (char*)"MergeSort");
+        sortview->show(array, {begin1, begin2, middle}, "rby", count_swap, (char *)"MergeSort");
     }
     while (begin2 <= end)
     {
         array_aux.push_back(array[begin2]);
         begin2++;
-        sortview.show(array, {begin1, begin2, middle}, "rby", count_swap, (char*)"MergeSort");
+        sortview->show(array, {begin1, begin2, middle}, "rby", count_swap, (char *)"MergeSort");
     }
     for (int i = 0; i < array_aux.size(); i++)
     {
         array[begin + i] = array_aux[i];
         count_swap++;
-        sortview.show(array, {begin+i}, "g", count_swap, (char*)"MergeSort");
+        sortview->show(array, {begin + i}, "g", count_swap, (char *)"MergeSort");
     }
     return count_swap;
 }
 
-int mergeSort(vector<int> &array, int begin, int end, int count_swap = 0)
+int mergeSort(SortView *sortview, vector<int> &array, int begin, int end, int count_swap = 0)
 {
     if (begin < end)
     {
         int middle = (begin + end) / 2;
-        count_swap = mergeSort(array, begin, middle, count_swap);
-        count_swap = mergeSort(array, middle + 1, end, count_swap);
-        count_swap = merge(array, begin, middle, end, count_swap);
+        count_swap = mergeSort(sortview, array, begin, middle, count_swap);
+        count_swap = mergeSort(sortview, array, middle + 1, end, count_swap);
+        count_swap = merge(sortview, array, begin, middle, end, count_swap);
     }
     return count_swap;
 }
 
-int bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int type_sort = 0, int count_swap = 0)
+int bucketSort(SortView *sortview, vector<int> &array, int bucket_qtt, int num_max, int num_min, int type_sort = 0, int count_swap = 0)
 {
     /*
         Cores:
@@ -142,13 +142,13 @@ int bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int
         if (i != bucket_qtt - 1)
             for (j = count_bucket; j < array.size(); j++)
             {
-                sortview.show(array, {j}, "m", count_swap, (char*)"BucketSort");
+                sortview->show(array, {j}, "m", count_swap, (char *)"BucketSort");
                 if (array[j] <= bucket_step * (i + 1) && array[j] > bucket_step * (i))
                 {
                     // bucket_array[i].push_back(array[j]);
                     swap(array[j], array[count_bucket]);
                     count_swap++;
-                    sortview.show(array, {j, count_bucket}, "mc", count_swap, (char*)"BucketSort");
+                    sortview->show(array, {j, count_bucket}, "mc", count_swap, (char *)"BucketSort");
                     count_bucket++;
                 }
             }
@@ -156,7 +156,7 @@ int bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int
             count_bucket = array.size();
         // ja realiza a ordenacao parcial no vetor (bucket reservado no proprio vetor)
         //(intervalo do bucket) a contagem dos elementos em cada bucket anterior ate o bucket atual
-        count_swap = sort(array, count_bucket_ant, count_bucket - 1, count_swap);
+        count_swap = sort(sortview, array, count_bucket_ant, count_bucket - 1, count_swap);
         count_bucket_ant = count_bucket - 1;
     }
     return count_swap;
