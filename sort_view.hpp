@@ -12,10 +12,10 @@ private:
     int _end;
     enum ViewOption{BAR, DOT};
     ViewOption _voption;
-    float _thick{7.0};
-    float _delta{10.0};
-    float xbegin{50};
-    float ybegin{550};
+    float _thick{9.0};
+    float _delta{11.0};
+    float xbegin{20};
+    float ybegin{600};
     RenderTexture painel;
 public:
     SortView()
@@ -29,6 +29,12 @@ public:
     void set_faixa(int begin, int end){
         _begin = begin;
         _end = end;
+    }
+
+    void set_thick(int size){
+        int size_default = 70;
+        _thick = size_default*_thick/size;
+        _delta = size_default*_delta/size;
     }
 
     void set_bar_view(){
