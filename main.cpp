@@ -20,9 +20,14 @@ int main()
     generateNumbers(array, size, max_value, min_value);
     sortview.set_thick(size);
     // quickSort(array, 0, array.size() - 1);
-    mergeSort(array, 0, array.size() - 1);
+    // mergeSort(array, 0, array.size() - 1);
     int bucket_qtt = 4;
-    // bucketSort(array, bucket_qtt, max_value, min_value, 1);
+    bucketSort(array, bucket_qtt, max_value, min_value, 0);
+    for (int i = 0; i < array.size(); i++)
+    {
+        cout<<array[i]<<" ";
+    }
+    cout<<endl;
     view_lock();
 
     

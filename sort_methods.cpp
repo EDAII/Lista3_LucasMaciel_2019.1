@@ -120,6 +120,7 @@ void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, in
     // cria os buckets
     // para conseguir jogar os buckets no proprio vetor, contador para fixalos e nao mais dar swap
     int count_bucket = 0;
+    int count_bucket_ant = 0;
     for (int i = 0, j = 0; i < bucket_qtt; i++)
     {
         for (j = 0; j < array.size(); j++)
@@ -131,8 +132,9 @@ void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, in
                 count_bucket++;
             }
         }
-
         // ja realiza a ordenacao parcial no vetor (bucket reservado no proprio vetor)
-        sort(array, i, j - 1);  // j-1 pois o j excede o tamanho do bucket quando sai do for anterior
+        //(intervalo do bucket) a contagem dos elementos em cada bucket anterior ate o bucket atual
+        sort(array, count_bucket_ant, count_bucket - 1);
+        count_bucket_ant = count_bucket - 1;
     }
 }
