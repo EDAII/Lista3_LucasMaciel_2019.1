@@ -75,7 +75,7 @@ public:
                            _thick, cor_linha));
     }
 
-    void show(const vector<int> &vet, vector<int> pos = {}, string cores = "", int count_swap = 0, char *name = (char *)"")
+    void show(const vector<int> &vet, vector<int> pos = {}, string cores = "", int count_swap = 0)
     {
         if (_mywindow->isOpen() == false)
             return;
@@ -97,7 +97,7 @@ public:
         }
 
         painel.display();
-        _mplayer->_push(painel.getTexture(), count_swap, name);
+        _mplayer->_push(painel.getTexture(), count_swap);
     }
 };
 

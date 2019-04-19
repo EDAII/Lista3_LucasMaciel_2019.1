@@ -257,12 +257,12 @@ private:
     uint _first;
     uint _max_size; //maximo a frente ou atras
     int _count_swap;
-    char *_name_method;
+    string _name_method;
     typename std::list<T>::iterator _it;
     std::list<T> _list;
 
 public:
-    MBuffer(uint max_size, T first)
+    MBuffer(uint max_size, T first, string name_method = "")
     {
         //inserindo uma funcao vazia que nao faz nada so pra inicializar
         //os indices e o vetor
@@ -272,7 +272,7 @@ public:
         _first = 0;
         _max_size = max_size;
         _count_swap = 0;
-        _name_method = (char *)"";
+        _name_method = name_method;
     }
 
     void set_max_size(uint size)
@@ -349,7 +349,7 @@ public:
         return _count_swap;
     }
 
-    char *get_name_method()
+    string get_name_method()
     {
         return _name_method;
     }
@@ -361,15 +361,13 @@ public:
 
     //se nao conseguiu andar pra frente eh porque nao conseguiu dar todos
     //os passos por falta de estados
-    bool go_foward(uint steps, int count_swap = 0, char *name = (char *)"")
+    bool go_foward(uint steps, int count_swap = 0)
     {
         if (_indice + steps < _list.size())
         {
             _indice += steps;
             if (count_swap != 0)
                 _count_swap = count_swap;
-            if (name != "")
-                _name_method = name;
             std::advance(_it, steps);
             return true;
         }
@@ -436,16 +434,10 @@ public:
     bool autoplay{false};
     int jump{1}; //define o tamanho do salto
 
-    MPlayer(MyWindow *mywindow) : _buffer(100, sf::Texture())
+    MPlayer(MyWindow *mywindow, string name_method = (char *)"") : _buffer(100, sf::Texture(), name_method)
     {
         _mywindow = mywindow;
     }
-    //Retorna o player
-    // static MPlayer *get_instance()
-    // {
-    //     static MPlayer _player;
-    //     return &_player;
-    // }
 
     //Espera a janela ser fechada
     //se estava esperando um salto de varios estados,
@@ -463,12 +455,12 @@ public:
     }
 
     //Funcao utilizada pelo pintor para salvar os estado
-    virtual void _push(const sf::Texture &texture, int count_swap = 0, char *name = (char *)"")
+    virtual void _push(const sf::Texture &texture, int count_swap = 0)
     {
         if (_mywindow->isOpen())
         {
             _buffer.push(texture);
-            _buffer.go_foward(1, count_swap, name);
+            _buffer.go_foward(1, count_swap);
             show();
         }
     }
@@ -553,11 +545,11 @@ private:
     void print_label()
     {
 
-        std::string title_left = " Method\t\t|Jump|Swaps|Atual ";
+        std::string title_left = " Jump|Swaps|Atual ";
 
         char estado[200];
-        sprintf(estado, " %s\t|%4d|%4d |%4d ",
-                _buffer.get_name_method(), jump, _buffer.get_count_swap(), _buffer.pos_actual());
+        sprintf(estado, "%4d |%4d |%4d ",
+                jump, _buffer.get_count_swap(), _buffer.pos_actual());
 
         _mywindow->draw(sfText(sf::Vector2f(0, 0), title_left, color_front));
         std::string state = estado;
@@ -583,6 +575,8 @@ private:
             colorAuto = sf::Color::Green;
         _mywindow->draw(sfText(sf::Vector2f(dim.x - width - 10, 15), autoOp, colorAuto));
         _mywindow->draw(dsLine(sf::Vector2f(0, 40), sf::Vector2f(dim.x, 40), 1, color_front));
+
+        _mywindow->draw(sfText(sf::Vector2f(0, 50), _buffer.get_name_method(), color_front));
     }
 
     //anda nos estados para frente e para trás chamando métodos do buffer

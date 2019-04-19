@@ -6,8 +6,9 @@
 using namespace std;
 
 void main_menu();
-void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vector<int> array, int num_max, int num_min);
-void generateNumbers(vector<int> &numbers, int size, int max_value, int min_value, bool repeate);
+void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vector<int> array, int num_min, int num_max);
+vector<int> build_array(int size, int min_value, int max_value, bool repeat);
+void generateNumbers(vector<int> &numbers, int size, int min_value, int max_value, bool repeate);
 
 int main()
 {
@@ -19,12 +20,13 @@ int main()
 void main_menu()
 {
     srand(time(NULL));
+    char name_method[100];
     int max_value = 500, min_value = 0;
-    int count_swap = 0;
-    const int size = 150;
-    vector<int> array(size, 0);
+    int size = 100;
+    bool repeat_value = false;
 
-    generateNumbers(array, size, max_value, min_value, false);
+    vector<int> array = build_array(size, min_value, max_value, repeat_value);
+
     int op = 0;
 
     SortView *sortview;
@@ -33,6 +35,7 @@ void main_menu()
 
     while (true)
     {
+        system("clear");
         vector<int> array_cp(array.size(), 0);
         for (int i = 0; i < array.size(); i++)
             array_cp[i] = array[i];
@@ -52,31 +55,52 @@ void main_menu()
             exit(0);
             break;
         case 1:
+            do {
+            cout << "---------------------------------------------------------------------------" << endl;
+            cout<< "Vetor com valores repetidos?(0 - nao, 1 - sim) ";
+            cin>>repeat_value;
+            repeat_value = (repeat_value == 1)?true:false;
+            cout<<"repeate: "<<repeat_value<<endl;
+            cout << "Tamanho do vetor(max 400): ";
+            cin >> size;
+            cout << "Maior valor no vetor(max 500): ";
+            cin >> max_value;
+            cout << "Menor valor no vetor(min 0): ";
+            cin >> min_value;
+            } while ((size > 400 || size < 10) || (max_value > 500
+                        || max_value <= min_value)
+                        || (min_value < 0 || min_value >= max_value)
+                        || (repeat_value == false && max_value < size)
+                    );
+
+            array = build_array(size, min_value, max_value, repeat_value);
             break;
         case 2:
+            sprintf(name_method, "QuickSort\ttamanho: %ld", array.size());
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow);
+            mplayer = new MPlayer(mywindow, name_method);
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(size); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
-            count_swap = quickSort(sortview, array_cp, 0, array.size() - 1);
+            quickSort(sortview, array_cp, 0, array.size() - 1);
             sortview->view_lock();
             delete (sortview);
             delete (mplayer);
             delete (mywindow);
             break;
         case 3:
+            sprintf(name_method, "MergeSort\ttamanho: %ld", array.size());
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow);
+            mplayer = new MPlayer(mywindow, name_method);
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(size); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
-            count_swap = mergeSort(sortview, array, 0, array.size() - 1);
+            mergeSort(sortview, array_cp, 0, array.size() - 1);
             sortview->view_lock();
             delete (sortview);
             delete (mplayer);
             delete (mywindow);
             break;
         case 4:
-            bucket_menu(mplayer, mywindow, sortview, array_cp, max_value, min_value);
+            bucket_menu(mplayer, mywindow, sortview, array_cp, min_value, max_value);
             break;
 
         default:
@@ -85,18 +109,21 @@ void main_menu()
     }
 }
 
-void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vector<int> array, int num_max, int num_min)
+void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vector<int> array, int num_min, int num_max)
 {
     int bucket_qtt = 2;
+    char name_method[100];
 
     int op = 0;
 
     while (true)
     {
+        system("clear");
         cout << "---------------------------------------------------------------------------" << endl;
         cout << "\t(1) - Quantidade de Baldes" << endl;
         cout << "\t(2) - Bucket com QuickSort" << endl;
         cout << "\t(3) - Bucket com MergeSort" << endl;
+        cout << "\t(4) - Retornar ao Menu Principal" << endl;
         cout << "\t(0) - Fechar Programa" << endl;
         cout << "---------------------------------------------------------------------------" << endl;
         cout << "Digite uma opcao: ";
@@ -104,13 +131,31 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
 
         switch (op)
         {
+        case 0:
+            exit(0);
         case 1:
-            cout << "Digite o numero de Baldes: (max 10)" << endl;
-            cin >> bucket_qtt;
+            do{
+                cout << "---------------------------------------------------------------------------" << endl;
+                cout << "Digite o numero de Baldes(max 10): ";
+                cin >> bucket_qtt;
+            }while (bucket_qtt > 10 || bucket_qtt < 1);
             break;
         case 2:
+            sprintf(name_method, "BucketSort(QuickSort)\ttamanho: %ld\tbaldes: %d", array.size(), bucket_qtt);
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow);
+            mplayer = new MPlayer(mywindow, name_method);
+            sortview = new SortView(mplayer, mywindow);
+            sortview->set_thick(array.size()); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
+            bucketSort(sortview, array, bucket_qtt, num_max, num_min, 0);
+            sortview->view_lock();
+            delete (sortview);
+            delete (mplayer);
+            delete (mywindow);
+            break;
+        case 3:
+            sprintf(name_method, "BucketSort(MergeSort)\ttamanho: %ld\tbaldes: %d", array.size(), bucket_qtt);
+            mywindow = new MyWindow();
+            mplayer = new MPlayer(mywindow, name_method);
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(array.size()); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
             bucketSort(sortview, array, bucket_qtt, num_max, num_min, 1);
@@ -118,6 +163,10 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
             delete (sortview);
             delete (mplayer);
             delete (mywindow);
+            break;
+        case 4:
+            main_menu();
+            break;
 
         default:
             break;
@@ -125,7 +174,14 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
     }
 }
 
-void generateNumbers(vector<int> &numbers, int size, int max_value, int min_value, bool repeate)
+vector<int> build_array(int size, int min_value, int max_value, bool repeate)
+{
+    vector<int> array(size, 0);
+    generateNumbers(array, size, min_value, max_value, repeate);
+    return array;
+}
+
+void generateNumbers(vector<int> &numbers, int size, int min_value, int max_value, bool repeate)
 {
     int tempNum; // variavel temporaria para o numero gerado
     bool found;  // alerta para numero ja usado
