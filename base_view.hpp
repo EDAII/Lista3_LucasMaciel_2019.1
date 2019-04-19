@@ -251,6 +251,7 @@ private:
     uint _indice;
     uint _first;
     uint _max_size; //maximo a frente ou atras
+    int _count_swap;
     typename std::list<T>::iterator _it;
     std::list<T> _list;
 public:
@@ -262,6 +263,7 @@ public:
         _indice = 0;
         _first = 0;
         _max_size = max_size;
+        _count_swap = 0;
     }
 
     void set_max_size(uint size){
@@ -321,15 +323,21 @@ public:
         return _first + _indice;
     }
 
+    int get_count_swap(){
+        return _count_swap;
+    }
+
     uint pos_last(){
         return _first + _list.size() - 1;
     }
 
     //se nao conseguiu andar pra frente eh porque nao conseguiu dar todos
     //os passos por falta de estados
-    bool go_foward(uint steps){
+    bool go_foward(uint steps, int count_swap = 0){
         if(_indice + steps < _list.size() ){
             _indice += steps;
+            if (count_swap != 0)
+                _count_swap = count_swap;
             std::advance(_it, steps);
             return true;
         }
@@ -420,10 +428,10 @@ public:
     }
 
     //Funcao utilizada pelo pintor para salvar os estado
-    virtual void _push(const sf::Texture &texture){
+    virtual void _push(const sf::Texture &texture, int count_swap){
         if(my_window->isOpen()){
             _buffer.push(texture);
-            _buffer.go_foward(1);
+            _buffer.go_foward(1, count_swap);
             show();
         }
     }
@@ -438,8 +446,6 @@ public:
                 _buffer.go_last();
                 autoplay = false;
             }
-
-
         }
 
         _return_to_main = false;
@@ -484,12 +490,12 @@ private:
     //mostra os comandos na parte superior da tela
     void print_label(){
 
-        std::string title_left = " Jump|First|Atual| Last|";
+        std::string title_left = " Jump|Swaps|Atual|Last|";
 
 
         char estado[200];
         sprintf(estado,     "%4d |%4d |%4d |%4d " ,
-                jump, _buffer.pos_first(), _buffer.pos_actual(), _buffer.pos_last());
+                jump, _buffer.get_count_swap(), _buffer.pos_actual(), _buffer.pos_last());
 
         my_window->draw(sfText(sf::Vector2f(0, 0), title_left, color_front));
         std::string state = estado;

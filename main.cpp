@@ -11,6 +11,7 @@ int main()
 {
     srand(time(NULL));
     int max_value = 500, min_value = 0;
+    int count_swap = 0;
 
     const int size = 150;
     vector<int> array(size, 0);
@@ -19,10 +20,11 @@ int main()
     //     array[i] = (rand() % (max_value - min_value + 1) + min_value);
     generateNumbers(array, size, max_value, min_value);
     sortview.set_thick(size);
-    // quickSort(array, 0, array.size() - 1);
-    // mergeSort(array, 0, array.size() - 1);
+    // count_swap = quickSort(array, 0, array.size() - 1);
+    // count_swap = mergeSort(array, 0, array.size() - 1);
     int bucket_qtt = 4;
-    bucketSort(array, bucket_qtt, max_value, min_value, 0);
+    count_swap = bucketSort(array, bucket_qtt, max_value, min_value, 0);
+    cout<<"num de swaps = "<<count_swap<<endl;
     for (int i = 0; i < array.size(); i++)
     {
         cout<<array[i]<<" ";

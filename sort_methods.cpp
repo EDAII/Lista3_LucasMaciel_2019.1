@@ -14,7 +14,7 @@ void swap(int *val1, int *val2)
     *val2 = aux;
 }
 
-int partition(vector<int> &array, int init , int end)
+int partition(vector<int> &array, int init , int end, int &count_swap)
 {
     int pivot = array[end];
     int i = init - 1;
@@ -24,27 +24,31 @@ int partition(vector<int> &array, int init , int end)
         {
             i = i + 1;
             swap(array[i], array[j]);
+            count_swap++;
         }
-        sortview.show(array, {i, j, pivot}, "rby");
+        sortview.show(array, {i, j, pivot}, "rby", count_swap);
     }
-    if (array[end] < array[i+1])
+    if (array[end] < array[i+1]){
         swap(array[i+1], array[end]);
+        count_swap++;
+    }
     return i+1;
 }
 
-void quickSort(vector<int> &array, int init, int end)
+int quickSort(vector<int> &array, int init, int end, int count_swap = 0)
 {
     if (init < end)
     {
-        int p = partition(array, init, end);
-        sortview.show(array, {init, end, p}, "rby");
-        quickSort(array, init, p - 1);
-        quickSort(array, p + 1, end);
+        int p = partition(array, init, end, count_swap);
+        sortview.show(array, {init, end, p}, "rby", count_swap);
+        count_swap = quickSort(array, init, p - 1, count_swap);
+        count_swap = quickSort(array, p + 1, end, count_swap);
     }
+    return count_swap;
 }
 
 
-void merge(vector<int> &array, int begin, int middle, int end)
+int merge(vector<int> &array, int begin, int middle, int end, int count_swap = 0)
 {
     /*
         Cores:
@@ -83,23 +87,30 @@ void merge(vector<int> &array, int begin, int middle, int end)
     for (int i = 0; i < array_aux.size(); i++)
     {
         array[begin + i] = array_aux[i];
-        sortview.show(array, {begin+i}, "g");
+        count_swap++;
+        sortview.show(array, {begin+i}, "g", count_swap);
     }
+    return count_swap;
 }
 
-void mergeSort(vector<int> &array, int begin, int end)
+int mergeSort(vector<int> &array, int begin, int end, int count_swap = 0)
 {
     if (begin < end)
     {
         int middle = (begin + end) / 2;
-        mergeSort(array, begin, middle);
-        mergeSort(array, middle + 1, end);
-        merge(array, begin, middle, end);
+        count_swap = mergeSort(array, begin, middle, count_swap);
+        count_swap = mergeSort(array, middle + 1, end, count_swap);
+        count_swap = merge(array, begin, middle, end, count_swap);
     }
+    return count_swap;
 }
 
-void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int type_sort = 0)
+int bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, int type_sort = 0, int count_swap = 0)
 {
+    /*
+        Cores:
+        j = magenta, count_bucket = ciano
+    */
     // faixas de valores dado o range do vetor
     int bucket_step = (num_max - num_min) / bucket_qtt;
     // vetor de buckets, vetor[qtd_buckets][nums]
@@ -123,18 +134,27 @@ void bucketSort(vector<int> &array, int bucket_qtt, int num_max, int num_min, in
     int count_bucket_ant = 0;
     for (int i = 0, j = 0; i < bucket_qtt; i++)
     {
-        for (j = 0; j < array.size(); j++)
-        {
-            if (array[j] <= bucket_step * (i + 1) && array[j] > bucket_step * (i))
+        /*condicao para nao fazer a varredura para o ultimo bucket,
+            pois obviamente os numeros já estão no bucket correto*/
+        if (i != bucket_qtt - 1)
+            for (j = count_bucket; j < array.size(); j++)
             {
-                // bucket_array[i].push_back(array[j]);
-                swap(array[j], array[count_bucket]);
-                count_bucket++;
+                sortview.show(array, {j}, "m");
+                if (array[j] <= bucket_step * (i + 1) && array[j] > bucket_step * (i))
+                {
+                    // bucket_array[i].push_back(array[j]);
+                    swap(array[j], array[count_bucket]);
+                    count_swap++;
+                    sortview.show(array, {j, count_bucket}, "mc", count_swap);
+                    count_bucket++;
+                }
             }
-        }
+        else
+            count_bucket = array.size();
         // ja realiza a ordenacao parcial no vetor (bucket reservado no proprio vetor)
         //(intervalo do bucket) a contagem dos elementos em cada bucket anterior ate o bucket atual
-        sort(array, count_bucket_ant, count_bucket - 1);
+        count_swap = sort(array, count_bucket_ant, count_bucket - 1, count_swap);
         count_bucket_ant = count_bucket - 1;
     }
+    return count_swap;
 }
