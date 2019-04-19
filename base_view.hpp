@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <cmath>
+#include <string>
 
 #include <map>
 #define my_colormap (ColorMap::get_instance())
@@ -244,6 +245,8 @@ public:
 #include <list>
 #include <iostream>
 
+using namespace std;
+
 template<typename T>
 class MBuffer
 {
@@ -252,6 +255,7 @@ private:
     uint _first;
     uint _max_size; //maximo a frente ou atras
     int _count_swap;
+    char* _name_method;
     typename std::list<T>::iterator _it;
     std::list<T> _list;
 public:
@@ -264,6 +268,7 @@ public:
         _first = 0;
         _max_size = max_size;
         _count_swap = 0;
+        _name_method = (char*)"";
     }
 
     void set_max_size(uint size){
@@ -315,9 +320,9 @@ public:
         return *_it;
     }
 
-    uint pos_first(){
-        return _first;
-    }
+    // uint pos_first(){
+    //     return _first;
+    // }
 
     uint pos_actual(){
         return _first + _indice;
@@ -327,17 +332,23 @@ public:
         return _count_swap;
     }
 
+    char* get_name_method(){
+        return _name_method;
+    }
+
     uint pos_last(){
         return _first + _list.size() - 1;
     }
 
     //se nao conseguiu andar pra frente eh porque nao conseguiu dar todos
     //os passos por falta de estados
-    bool go_foward(uint steps, int count_swap = 0){
+    bool go_foward(uint steps, int count_swap = 0, char* name = (char*)""){
         if(_indice + steps < _list.size() ){
             _indice += steps;
             if (count_swap != 0)
                 _count_swap = count_swap;
+            if (name != "")
+                _name_method = name;
             std::advance(_it, steps);
             return true;
         }
@@ -379,11 +390,7 @@ public:
 
 #include <SFML/Graphics.hpp>
 
-//#include "sftext.h"
-//#include "colormap.h"
-//#include "mbuffer.h"
-//#include "sfline.h"
-//#include "mywindow.h"
+using namespace std;
 
 #define my_player (MPlayer::get_instance())
 
@@ -428,10 +435,10 @@ public:
     }
 
     //Funcao utilizada pelo pintor para salvar os estado
-    virtual void _push(const sf::Texture &texture, int count_swap){
+    virtual void _push(const sf::Texture &texture, int count_swap = 0, char* name = (char*)""){
         if(my_window->isOpen()){
             _buffer.push(texture);
-            _buffer.go_foward(1, count_swap);
+            _buffer.go_foward(1, count_swap, name);
             show();
         }
     }
@@ -490,12 +497,12 @@ private:
     //mostra os comandos na parte superior da tela
     void print_label(){
 
-        std::string title_left = " Jump|Swaps|Atual|Last|";
+        std::string title_left = " Method\t\t|Jump|Swaps|Atual ";
 
 
         char estado[200];
-        sprintf(estado,     "%4d |%4d |%4d |%4d " ,
-                jump, _buffer.get_count_swap(), _buffer.pos_actual(), _buffer.pos_last());
+        sprintf(estado,     " %s\t|%4d|%4d |%4d " ,
+                _buffer.get_name_method(), jump, _buffer.get_count_swap(), _buffer.pos_actual());
 
         my_window->draw(sfText(sf::Vector2f(0, 0), title_left, color_front));
         std::string state = estado;

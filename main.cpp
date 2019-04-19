@@ -23,7 +23,7 @@ int main()
     // count_swap = quickSort(array, 0, array.size() - 1);
     // count_swap = mergeSort(array, 0, array.size() - 1);
     int bucket_qtt = 4;
-    count_swap = bucketSort(array, bucket_qtt, max_value, min_value, 0);
+    count_swap = bucketSort(array, bucket_qtt, max_value, min_value, 1);
     cout<<"num de swaps = "<<count_swap<<endl;
     for (int i = 0; i < array.size(); i++)
     {
