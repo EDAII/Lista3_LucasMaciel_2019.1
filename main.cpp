@@ -12,11 +12,6 @@ void generateNumbers(vector<int> &numbers, int size, int min_value, int max_valu
 
 int main()
 {
-    // vector<int> test = {1, 250, 33, 2, 10, 155};
-    // quickSort2(test, 0, test.size() - 1);
-    // for (int i = 0; i < test.size(); i++)
-    //     cout << test[i] << " ";
-    // cout << endl;
     main_menu();
 
     return 0;
@@ -26,6 +21,7 @@ void main_menu()
 {
     srand(time(NULL));
     char name_method[100];
+    string text_colors[10];
     int max_value = 500, min_value = 0;
     int size = 100;
     bool repeat_value = false;
@@ -66,21 +62,21 @@ void main_menu()
                 cout << "Vetor com valores repetidos?(0 - nao, 1 - sim) ";
                 cin >> repeat_value;
                 repeat_value = (repeat_value == 1) ? true : false;
-                cout << "repeate: " << repeat_value << endl;
-                cout << "Tamanho do vetor(max 400): ";
+                cout << "Tamanho do vetor(max 500): ";
                 cin >> size;
                 cout << "Maior valor no vetor(max 500): ";
                 cin >> max_value;
                 cout << "Menor valor no vetor(min 0): ";
                 cin >> min_value;
-            } while ((size > 400 || size < 10) || (max_value > 500 || max_value <= min_value) || (min_value < 0 || min_value >= max_value) || (repeat_value == false && max_value < size));
+            } while ((size > 500 || size < 10) || (max_value > 500 || max_value <= min_value) || (min_value < 0 || min_value >= max_value) || (repeat_value == false && max_value < size));
 
             array = build_array(size, min_value, max_value, repeat_value);
             break;
         case 2:
+            //Cores:  i = red, j = blue, end + init = index pivot = yelow
             sprintf(name_method, "QuickSort\ttamanho: %ld", array.size());
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow, name_method);
+            mplayer = new MPlayer(mywindow, name_method, {"incrementador", "decrementador", "pivo"}, "rby");
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(size); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
             quickSort(sortview, array_cp, 0, array.size() - 1);
@@ -90,9 +86,10 @@ void main_menu()
             delete (mywindow);
             break;
         case 3:
+            //Cores: begin1 = red, begin2 = blue, middle = yellow, begin+i = merge = green
             sprintf(name_method, "MergeSort\ttamanho: %ld", array.size());
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow, name_method);
+            mplayer = new MPlayer(mywindow, name_method, {"inicio1", "inicio2", "meio", "mesclagem"}, "rbyg");
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(size); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
             mergeSort(sortview, array_cp, 0, array.size() - 1);
@@ -144,9 +141,10 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
             } while (bucket_qtt > 10 || bucket_qtt < 1);
             break;
         case 2:
+            // Cores: j = magenta, count_bucket = ciano, i = red, j = blue, end + init = index pivot = yelow
             sprintf(name_method, "BucketSort(QuickSort)\ttamanho: %ld\tbaldes: %d", array.size(), bucket_qtt);
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow, name_method);
+            mplayer = new MPlayer(mywindow, name_method, {"varredura", "alocacao", "incrementador", "decrementador", "pivo"}, "mcrby");
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(array.size()); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
             bucketSort(sortview, array, bucket_qtt, num_max, num_min, 0);
@@ -156,9 +154,10 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
             delete (mywindow);
             break;
         case 3:
+            // Cores: j = magenta, count_bucket = ciano, begin1 = red, begin2 = blue, middle = yellow, begin+i = merge = green
             sprintf(name_method, "BucketSort(MergeSort)\ttamanho: %ld\tbaldes: %d", array.size(), bucket_qtt);
             mywindow = new MyWindow();
-            mplayer = new MPlayer(mywindow, name_method);
+            mplayer = new MPlayer(mywindow, name_method, {"varredura", "alocacao", "inicio1", "inicio2", "meio", "mesclagem"}, "mcrbyg");
             sortview = new SortView(mplayer, mywindow);
             sortview->set_thick(array.size()); // redimensiona tamanho da barra de acorodo com o tamanho do vetor
             bucketSort(sortview, array, bucket_qtt, num_max, num_min, 1);

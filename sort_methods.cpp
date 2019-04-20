@@ -93,8 +93,9 @@ int merge(SortView *sortview, vector<int> &array, int begin, int middle, int end
     }
     for (int i = 0; i < array_aux.size(); i++)
     {
+        if (array[begin + i] != array_aux[i] && (begin + i) != i)
+            count_swap++;
         array[begin + i] = array_aux[i];
-        count_swap++;
         sortview->show(array, {begin + i}, "g", count_swap);
     }
     return count_swap;

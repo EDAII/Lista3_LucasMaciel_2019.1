@@ -410,10 +410,12 @@ public:
 #include <cmath>
 #include <list>
 #include <queue>
+#include <array>
 
 #include <SFML/Graphics.hpp>
 
 using namespace std;
+using namespace sf;
 
 // #define my_player (MPlayer::get_instance())
 
@@ -422,10 +424,13 @@ class MPlayer
 private:
     sf::Clock _clock;
     MBuffer<sf::Texture> _buffer;
+    ColorMap *cmap = ColorMap::get_instance();
     bool _return_to_main{false};
     bool _finished{false};
     int _destiny{0}; //proximo estado a ser mostrado
     MyWindow *_mywindow;
+    vector<string> _texts_colors;
+    string _colors;
 
 public:
     sf::Color color_back{sf::Color::Black};
@@ -434,8 +439,14 @@ public:
     bool autoplay{false};
     int jump{1}; //define o tamanho do salto
 
-    MPlayer(MyWindow *mywindow, string name_method = (char *)"") : _buffer(100, sf::Texture(), name_method)
+    MPlayer(MyWindow *mywindow,
+            string name_method = (char *)"",
+            vector<string> texts_colors = {},
+            string colors = "") : _buffer(100, sf::Texture(), name_method)
     {
+        _colors = colors;
+        _texts_colors = texts_colors;
+
         _mywindow = mywindow;
     }
 
@@ -537,8 +548,6 @@ private:
                 }
             }
         }
-        //        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){walk(jump * jump);}
-        //        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){walk(-(jump * jump));}
     }
 
     //mostra os comandos na parte superior da tela
@@ -552,7 +561,8 @@ private:
                 jump, _buffer.get_count_swap(), _buffer.pos_actual());
 
         _mywindow->draw(sfText(sf::Vector2f(0, 0), title_left, color_front));
-        std::string state = estado;
+        std::string state;
+        state = estado;
         if (_finished)
             state += "(Finalizado!)";
         else
@@ -576,7 +586,11 @@ private:
         _mywindow->draw(sfText(sf::Vector2f(dim.x - width - 10, 15), autoOp, colorAuto));
         _mywindow->draw(dsLine(sf::Vector2f(0, 40), sf::Vector2f(dim.x, 40), 1, color_front));
 
+        // nome do metodo
         _mywindow->draw(sfText(sf::Vector2f(0, 50), _buffer.get_name_method(), color_front));
+        // glossario de cores
+        for (int k = 0; k < _texts_colors.size(); k++)
+            _mywindow->draw(sfText(sf::Vector2f(k * 120, 65), _texts_colors[k], cmap->get(_colors[k])));
     }
 
     //anda nos estados para frente e para trás chamando métodos do buffer
