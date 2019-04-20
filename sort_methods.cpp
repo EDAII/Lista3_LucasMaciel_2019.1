@@ -14,39 +14,43 @@ void swap(int *val1, int *val2)
     *val2 = aux;
 }
 
-int partition(SortView *sortview, vector<int> &array, int init, int end, int &count_swap)
-{
-    int pivot = array[end];
-    int i = init - 1;
-    for (int j = init; j < end; j++)
-    {
-        if (array[j] < pivot)
-        {
-            i = i + 1;
-            swap(array[i], array[j]);
-            count_swap++;
-        }
-        sortview->show(array, {i, j, pivot}, "rby", count_swap);
-    }
-    if (array[end] < array[i + 1])
-    {
-        swap(array[i + 1], array[end]);
-        sortview->show(array, {i, pivot}, "ry", count_swap);
-        count_swap++;
-    }
-    return i + 1;
-}
-
 int quickSort(SortView *sortview, vector<int> &array, int init, int end, int count_swap = 0)
 {
-    if (init < end)
+    /*
+        Cores:
+            i = red, j = blue, end + init = index pivot = yelow
+    */
+    int pivot;
+    int i = 0;
+    int j = 0;
+    if (end > init)
     {
-        int p = partition(sortview, array, init, end, count_swap);
-        sortview->show(array, {init, end, p}, "rby", count_swap);
-        count_swap = quickSort(sortview, array, init, p - 1, count_swap);
-        sortview->show(array, {init, end, p}, "rby", count_swap);
-        count_swap = quickSort(sortview, array, p + 1, end, count_swap);
-        sortview->show(array, {init, end, p}, "rby", count_swap);
+        i = init;
+        j = end;
+        pivot = array[(end + init) / 2];
+        while (i <= j)
+        {
+            while (array[i] < pivot)
+            {
+                i++;
+                sortview->show(array, {i, j, end + init}, "rby", count_swap);
+            }
+            while (pivot < array[j])
+            {
+                j--;
+                sortview->show(array, {i, j, end + init}, "rby", count_swap);
+            }
+            if (i <= j)
+            {
+                swap(array[i], array[j]);
+                i++;
+                j--;
+                count_swap++;
+                sortview->show(array, {i, j, end + init}, "rby", count_swap);
+            }
+        }
+        count_swap = quickSort(sortview, array, init, j, count_swap);
+        count_swap = quickSort(sortview, array, i, end, count_swap);
     }
     return count_swap;
 }

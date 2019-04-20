@@ -12,6 +12,11 @@ void generateNumbers(vector<int> &numbers, int size, int min_value, int max_valu
 
 int main()
 {
+    // vector<int> test = {1, 250, 33, 2, 10, 155};
+    // quickSort2(test, 0, test.size() - 1);
+    // for (int i = 0; i < test.size(); i++)
+    //     cout << test[i] << " ";
+    // cout << endl;
     main_menu();
 
     return 0;
@@ -55,23 +60,20 @@ void main_menu()
             exit(0);
             break;
         case 1:
-            do {
-            cout << "---------------------------------------------------------------------------" << endl;
-            cout<< "Vetor com valores repetidos?(0 - nao, 1 - sim) ";
-            cin>>repeat_value;
-            repeat_value = (repeat_value == 1)?true:false;
-            cout<<"repeate: "<<repeat_value<<endl;
-            cout << "Tamanho do vetor(max 400): ";
-            cin >> size;
-            cout << "Maior valor no vetor(max 500): ";
-            cin >> max_value;
-            cout << "Menor valor no vetor(min 0): ";
-            cin >> min_value;
-            } while ((size > 400 || size < 10) || (max_value > 500
-                        || max_value <= min_value)
-                        || (min_value < 0 || min_value >= max_value)
-                        || (repeat_value == false && max_value < size)
-                    );
+            do
+            {
+                cout << "---------------------------------------------------------------------------" << endl;
+                cout << "Vetor com valores repetidos?(0 - nao, 1 - sim) ";
+                cin >> repeat_value;
+                repeat_value = (repeat_value == 1) ? true : false;
+                cout << "repeate: " << repeat_value << endl;
+                cout << "Tamanho do vetor(max 400): ";
+                cin >> size;
+                cout << "Maior valor no vetor(max 500): ";
+                cin >> max_value;
+                cout << "Menor valor no vetor(min 0): ";
+                cin >> min_value;
+            } while ((size > 400 || size < 10) || (max_value > 500 || max_value <= min_value) || (min_value < 0 || min_value >= max_value) || (repeat_value == false && max_value < size));
 
             array = build_array(size, min_value, max_value, repeat_value);
             break;
@@ -134,11 +136,12 @@ void bucket_menu(MPlayer *mplayer, MyWindow *mywindow, SortView *sortview, vecto
         case 0:
             exit(0);
         case 1:
-            do{
+            do
+            {
                 cout << "---------------------------------------------------------------------------" << endl;
                 cout << "Digite o numero de Baldes(max 10): ";
                 cin >> bucket_qtt;
-            }while (bucket_qtt > 10 || bucket_qtt < 1);
+            } while (bucket_qtt > 10 || bucket_qtt < 1);
             break;
         case 2:
             sprintf(name_method, "BucketSort(QuickSort)\ttamanho: %ld\tbaldes: %d", array.size(), bucket_qtt);
